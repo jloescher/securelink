@@ -1,15 +1,21 @@
 import { useState } from 'react'
-import { supabase } from '../lib/supabaseClient'
+import { useAuth } from '@/lib/auth';
 
-export default function PasswordRecovery() {
+export default function Forgot() {
+  const { forgotPassword } = useAuth();
   const [email, setEmail] = useState('')
+  const [message, setMessage] = useState("")
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    const { data, error } = await supabase.auth.api.resetPasswordForEmail(email)
-    if (error) console.error("Error: ", error.message)
-    else alert("Success! Check your email for password reset instructions")
-  }
+    e.preventDefault();
+    const { error } = await forgotPassword(email);
+
+    if (error) {
+      setMessage("Error resetting password\n" + error.message + "\n" + error.error_description);
+    } else {
+      setMessage("Password reset link has been sent to your email");
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -32,6 +38,7 @@ export default function PasswordRecovery() {
               Send Recovery Email
             </button>
           </div>
+          {message && <p>{message}</p>}
         </form>
       </div>
     </div>

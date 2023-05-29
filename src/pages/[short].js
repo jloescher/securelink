@@ -3,13 +3,12 @@ import Head from "next/head";
 
 export const getServerSideProps = async (request) => {
   let long_url
-  let newCount
   const { short } = request.query
   try {
     // Get the current count for this short_uri from the database
     let { data, error } = await supabase
       .from('urls')
-      .select('count, long_url')
+      .select('id, long_url')
       .eq('short_uri', short)
 
     if (error) throw error
@@ -20,13 +19,7 @@ export const getServerSideProps = async (request) => {
     }
 
     // Increment count for this short_uri in the database
-    newCount = data[0].count + 1
-    let { error: updateError } = await supabase
-      .from('urls')
-      .update({ count: newCount })
-      .match({ short_uri: short })
-
-    if (updateError) throw updateError
+    const { data: updateData, error: updateError } = await supabase.rpc('increment_count', { row_id: data[0].id })
   } catch (updateError) {
     console.error(updateError)
   }

@@ -1,9 +1,9 @@
-import { useUser } from '../lib/auth'
+import { useAuth } from '../lib/auth'
 import ShortenUrl from '../components/ShortenUrl'
-import SignIn from '@/components/SignIn'
+import SignIn from './signin'
 
 export default function Home() {
-  const { user } = useUser()
+  const { user } = useAuth()
 
   return (
     <div>
