@@ -1,6 +1,6 @@
-import { createContext, useState, useEffect, useContext } from 'react';
-import { useRouter } from 'next/router';
-import { supabase } from '../lib/supabaseClient'
+import {createContext, useContext, useEffect, useState} from 'react';
+import {useRouter} from 'next/router';
+import {supabase} from '@/lib/supabaseClient'
 
 export const AuthContext = createContext()
 
@@ -10,16 +10,17 @@ export function AuthProvider({ children }) {
   const router = useRouter()
 
   useEffect(() => {
-    const session = supabase.auth.getSession()
-    setUser(session?.user ?? null)
+    const { data } = supabase.auth.getSession()
+    setUser(data?.session?.user ?? null)
     setLoading(false)
 
-    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null)
+    const { subscription } = supabase.auth.onAuthStateChange(
+        async (_event, session) => {
+          setUser(session?.user ?? null)
     });
 
     return () => {
-      authListener?.unsubscribe()
+      subscription?.unsubscribe()
     }
   }, [])
 
@@ -27,12 +28,11 @@ export function AuthProvider({ children }) {
     try {
       setLoading(true)
       const { error } = await supabase.auth.signInWithPassword({ email, password })
-      if (error) throw error
       if (!error && redirectTo) {
-        router.push(redirectTo);
+        await router.push(redirectTo);
       }
     } catch (error) {
-      alert(error.error_description || error.message)
+      alert(error.message)
     } finally {
       setLoading(false)
     }
@@ -43,7 +43,6 @@ export function AuthProvider({ children }) {
       setLoading(true);
       // sign up user
       const { data, error } = await supabase.auth.signUp({ email, password })
-      if (error) throw error
       const user = data?.user
 
 
@@ -53,15 +52,13 @@ export function AuthProvider({ children }) {
         const { data, error: insertError } = await supabase
           .from('profiles')
           .insert([{ user_id: user.id, first_name: firstName, last_name: lastName, is_admin: false }])
-
-        if (insertError) throw insertError
       }
 
       if (!error && redirectTo) {
-        router.push(redirectTo);
+        await router.push(redirectTo);
       }
     } catch (error) {
-      alert(error.error_description || error.message)
+      alert(error.message)
     } finally {
       setLoading(false)
     }
@@ -70,18 +67,16 @@ export function AuthProvider({ children }) {
   const signOut = async () => {
     try {
       const { error } = await supabase.auth.signOut()
-      if (error) throw error;
     } catch (error) {
-      alert(error.error_description || error.message)
+      alert(error.message)
     }
   }
 
   const forgotPassword = async (email) => {
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(email)
-      if (error) throw error;
     } catch (error) {
-      alert(error.error_description || error.message)
+      alert(error.message)
     }
   }
 
@@ -102,7 +97,5 @@ export function AuthProvider({ children }) {
 }
 
 export function useAuth() {
-  const value = useContext(AuthContext)
-
-  return value
+  return useContext(AuthContext)
 }

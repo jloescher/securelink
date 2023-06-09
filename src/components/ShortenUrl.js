@@ -1,27 +1,39 @@
 import { useState } from 'react'
-import { supabase } from '../lib/supabaseClient'
+import { supabase } from '@/lib/supabaseClient'
 import { nanoid } from 'nanoid'
+import Link from "next/link";
+
+const getStaticProps = async () => {
+
+}
 
 export default function ShortenUrl({ user }) {
+  const baseUrl = process.env.NEXT_PUBLIC_HOST_URL
   const [url, setUrl] = useState('')
+  const [shortUrl, setShortUrl] = useState('')
 
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    // const { user } = supabase.auth.getSession()
-
     let shortened;
     let unique = false;
+
+    const { data: countData , count } = supabase.from('urls').select('*', { count: 'exact', head: true })
+
+    if (!countData && !count) {
+      unique = true
+      shortened = nanoid(7)
+    }
 
     // shortened = nanoid(7) // generates a 7-char unique identifier
     while (!unique) {
       shortened = nanoid(7)  // generates a 7-char unique identifier
 
       const { data, error } = await supabase
-        .from('urls')
-        .select('short_uri')
-        .eq('short_uri', shortened)
-        .single()
+          .from('urls')
+          .select('short_uri')
+          .eq('short_uri', shortened)
+          .limit(1)
 
       if (error) {
         console.error("Error: ", error.message)
@@ -41,8 +53,7 @@ export default function ShortenUrl({ user }) {
     if (error) {
       console.error("Error: ", error.message)
     } else {
-      alert("Success! Your shortened URL is: " + shortened)
-      console.log(data)
+      setShortUrl(baseUrl + shortened)
       setUrl('')
     }
   }
@@ -69,6 +80,11 @@ export default function ShortenUrl({ user }) {
             </button>
           </div>
         </form>
+        <div>
+          {shortUrl ?
+            <Link href={shortUrl} className="text-slate-600">{shortUrl}</Link> : <span></span>
+          }
+        </div>
       </div>
     </div>
   )
