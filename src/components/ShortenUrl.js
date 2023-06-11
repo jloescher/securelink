@@ -1,48 +1,30 @@
-import { useState } from 'react'
+import {useEffect, useState} from 'react'
 import { supabase } from '@/lib/supabaseClient'
 import { nanoid } from 'nanoid'
 import Link from "next/link";
-
-const getStaticProps = async () => {
-
-}
+import Shortener from "@/lib/shortener";
 
 export default function ShortenUrl({ user }) {
   const baseUrl = process.env.NEXT_PUBLIC_HOST_URL
   const [url, setUrl] = useState('')
   const [shortUrl, setShortUrl] = useState('')
+  const [customUri, setCustomUri] = useState(false)
+
+  useEffect(() => {
+    !customUri ? setShortUrl('') : null
+  }, [customUri])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
 
     let shortened;
-    let unique = false;
 
-    const { data: countData , count } = supabase.from('urls').select('*', { count: 'exact', head: true })
-
-    if (!countData && !count) {
-      unique = true
-      shortened = nanoid(7)
+    if (customUri && shortUrl.length > 4) {
+      shortened = shortUrl
+    } else {
+      shortened = (await Shortener()).shortened
     }
 
-    // shortened = nanoid(7) // generates a 7-char unique identifier
-    while (!unique) {
-      shortened = nanoid(7)  // generates a 7-char unique identifier
-
-      const { data, error } = await supabase
-          .from('urls')
-          .select('short_uri')
-          .eq('short_uri', shortened)
-          .limit(1)
-
-      if (error) {
-        console.error("Error: ", error.message)
-        return;
-      }
-
-      // If no data is returned, then the shortened URL is unique
-      unique = !data;
-    }
     const { data, error } = await supabase
       .from('urls')
       .insert([
@@ -53,24 +35,46 @@ export default function ShortenUrl({ user }) {
     if (error) {
       console.error("Error: ", error.message)
     } else {
-      setShortUrl(baseUrl + shortened)
+      setShortUrl(shortened)
       setUrl('')
     }
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
+    <div className="py-12 sm:px-6 lg:px-8 w-full">
+      <div className="p-8 bg-white rounded shadow-md space-y-4">
         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
           Shorten your URL
         </h2>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md shadow-sm -space-y-px">
-            <div>
+            <div className="mb-2">
               <label htmlFor="url" className="sr-only">URL</label>
               <input id="url" name="url" type="url" value={url} onChange={e => setUrl(e.target.value)} required
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Enter your URL" />
+            </div>
+            <div className="flex items-center space-x-2 mb-2">
+              <input
+                  type="checkbox"
+                  checked={customUri}
+                  onChange={(e) => setCustomUri(e.target.checked)}
+                  className="h-5 w-5 text-blue-600 rounded"
+              />
+              <label htmlFor="custom_uri" className="font-medium text-gray-700">Use Custom URI</label>
+            </div>
+            <div>
+            {customUri && (
+                <div className="mt-2">
+                  <input
+                      type="text"
+                      placeholder="Enter custom URI"
+                      className="border border-gray-300 p-2 w-full rounded text-gray-700"
+                      value={shortUrl}
+                      onChange={(e) => setShortUrl(e.target.value)}
+                  />
+                </div>
+            )}
             </div>
           </div>
           <div>
@@ -80,10 +84,10 @@ export default function ShortenUrl({ user }) {
             </button>
           </div>
         </form>
-        <div>
-          {shortUrl ?
-            <Link href={shortUrl} className="text-slate-600">{shortUrl}</Link> : <span></span>
-          }
+        <div className="text-center mt-2">
+          {shortUrl && (
+            <Link href={baseUrl + shortUrl} className="text-red-600" target="_blank">{baseUrl + shortUrl}</Link>
+          )}
         </div>
       </div>
     </div>

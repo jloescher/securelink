@@ -10,15 +10,19 @@ export default function SecureLink({ Component, pageProps }) {
     return (
       <>
         <Header />
-        <Component {...pageProps} />
+        <div className="min-h-screen">
+            <Component {...pageProps} />
+        </div>
       </>
     )
   }
 
   return (
     <AuthProvider>
-      <Header />
-      <Component {...pageProps} />
+        <Header />
+        <div className="flex flex-col items-center justify-center align-middle min-h-full">
+            <Component {...pageProps} />
+        </div>
     </AuthProvider>
   );
 }

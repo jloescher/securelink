@@ -33,7 +33,7 @@ const EditProfile = () => {
       id: profile.id,
       first_name: profile.first_name,
       last_name: profile.last_name,
-      is_admin: user.is_admin ? profile.is_admin : undefined,
+      is_admin: profile.is_admin,
       user_id: user.id,
       updated_at: new Date(),
     }
@@ -56,7 +56,7 @@ const EditProfile = () => {
                 value={profile?.first_name}
                 onChange={(e) => setProfile({ ...profile, first_name: e.target.value })}
                 placeholder="First name"
-                className="border border-gray-300 p-2 w-full rounded"
+                className="border border-gray-300 p-2 w-full rounded text-gray-900"
             />
           </div>
           <div className="mb-2">
@@ -65,16 +65,17 @@ const EditProfile = () => {
                 value={profile?.last_name}
                 onChange={(e) => setProfile({ ...profile, last_name: e.target.value })}
                 placeholder="Last name"
-                className="border border-gray-300 p-2 w-full rounded"
+                className="border border-gray-300 p-2 w-full rounded text-gray-900"
             />
           </div>
-          {user?.is_admin && (
+          {profile?.is_admin && (
               <div className="flex items-center space-x-2">
                 <input
                     type="checkbox"
                     checked={profile?.is_admin}
                     onChange={(e) => setProfile({ ...profile, is_admin: e.target.checked })}
                     className="h-5 w-5 text-blue-600 rounded"
+                    disabled
                 />
                 <label className="font-medium text-gray-700" htmlFor="is_admin">Is Admin</label>
               </div>
