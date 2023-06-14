@@ -15,7 +15,7 @@ function Header() {
                 {user ? (
                     <>
                         <Link
-                            href="editprofile"
+                            href="/editprofile"
                             className="text-sm font-semibold text-white bg-blue-500 px-4 py-[9px] mr-2 rounded hover:bg-blue-600"
                         >
                             Profile

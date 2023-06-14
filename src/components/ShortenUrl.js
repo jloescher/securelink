@@ -9,10 +9,24 @@ export default function ShortenUrl({ user }) {
   const [url, setUrl] = useState('')
   const [shortUrl, setShortUrl] = useState('')
   const [customUri, setCustomUri] = useState(false)
+  const [useExpireOn, setUseExpireOn] = useState(false)
+  const [expireOn, setExpireOn] = useState(null)
+  const [useMaxVisits, setUseMaxVisits] = useState(false)
+  const [maxVisits, setMaxVisits] = useState(null)
+  const [expireOnTimestampz, setExpireOnTimestampz] = useState(null)
 
   useEffect(() => {
-    !customUri ? setShortUrl('') : null
-  }, [customUri])
+    // !customUri ? setShortUrl('') : null
+    !useExpireOn ? setExpireOn(null) : null
+    !useMaxVisits ? setMaxVisits(null) : null
+
+    // Convert local date time to timestampz format
+    if (expireOn) {
+      const dateTime = new Date(expireOn);
+      const timestampz = dateTime.toISOString()
+      setExpireOnTimestampz(timestampz)
+    }
+  }, [expireOn, customUri, useExpireOn, useMaxVisits])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -27,9 +41,13 @@ export default function ShortenUrl({ user }) {
 
     const { data, error } = await supabase
       .from('urls')
-      .insert([
-        { long_url: url, short_uri: shortened, user_id: user.id }
-      ])
+      .insert([{
+        long_url: url,
+        short_uri: shortened,
+        max_visits: maxVisits ? maxVisits : null,
+        expire_on: expireOnTimestampz ? expireOnTimestampz : null,
+        user_id: user.id
+      }])
       .select()
 
     if (error) {
@@ -37,6 +55,7 @@ export default function ShortenUrl({ user }) {
     } else {
       setShortUrl(shortened)
       setUrl('')
+      setCustomUri(false)
     }
   }
 
@@ -63,6 +82,24 @@ export default function ShortenUrl({ user }) {
               />
               <label htmlFor="custom_uri" className="font-medium text-gray-700">Use Custom URI</label>
             </div>
+            <div className="flex items-center space-x-2 mb-2">
+              <input
+                  type="checkbox"
+                  checked={useExpireOn}
+                  onChange={(e) => setUseExpireOn(e.target.checked)}
+                  className="h-5 w-5 text-blue-600 rounded"
+              />
+              <label htmlFor="custom_uri" className="font-medium text-gray-700">Use Expire On</label>
+            </div>
+            <div className="flex items-center space-x-2 mb-2">
+              <input
+                  type="checkbox"
+                  checked={useMaxVisits}
+                  onChange={(e) => setUseMaxVisits(e.target.checked)}
+                  className="h-5 w-5 text-blue-600 rounded"
+              />
+              <label htmlFor="custom_uri" className="font-medium text-gray-700">Use Max Visits</label>
+            </div>
             <div>
             {customUri && (
                 <div className="mt-2">
@@ -76,6 +113,31 @@ export default function ShortenUrl({ user }) {
                 </div>
             )}
             </div>
+            <div>
+              {useExpireOn && (
+                  <div className="mt-2">
+                    <input
+                        type="datetime-local"
+                        className="border border-gray-300 p-2 w-full rounded text-gray-700"
+                        value={expireOn}
+                        onChange={(e) => setExpireOn(e.target.value)}
+                    />
+                  </div>
+              )}
+            </div>
+            <div>
+              {useMaxVisits && (
+                  <div className="mt-2">
+                    <input
+                        type="number"
+                        placeholder="Enter max visits."
+                        className="border border-gray-300 p-2 w-full rounded text-gray-700"
+                        value={maxVisits}
+                        onChange={(e) => setMaxVisits(e.target.value)}
+                    />
+                  </div>
+              )}
+            </div>
           </div>
           <div>
             <button type="submit"
@@ -86,7 +148,7 @@ export default function ShortenUrl({ user }) {
         </form>
         <div className="text-center mt-2">
           {shortUrl && (
-            <Link href={baseUrl + shortUrl} className="text-red-600" target="_blank">{baseUrl + shortUrl}</Link>
+            <Link href={baseUrl + shortUrl} className="text-blue-600" target="_blank">{baseUrl + shortUrl}</Link>
           )}
         </div>
       </div>

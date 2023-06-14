@@ -1,7 +1,7 @@
 import * as CryptoJS from 'crypto-js'
 import * as argon2 from 'argon2-browser'
 
-async function hashPassword(password) {
+const hashPassword = async (password) => {
     const hash = await argon2.hash({
         pass: password,
         salt: process.env.NEXT_PUBLIC_SALT,
@@ -10,7 +10,7 @@ async function hashPassword(password) {
     return hash.encoded
 }
 
-async function verifyPassword(encHash, password) {
+const verifyPassword = async (encHash, password) => {
     return await argon2.verify({
         pass: password,
         encoded: encHash,
@@ -28,14 +28,14 @@ const decrypt = async (encryptedText, short_uri) => {
     if (decrypted) {
         try {
             console.log(decrypted)
-            const str = decrypted.toString()(CryptoJS.enc.Utf8)
+            const str = decrypted.toString(CryptoJS.enc.Utf8)
             if (str.length > 0) {
                 return str
             } else {
                 return 'error 1'
             }
         } catch (e) {
-            return 'error 2'
+            return `${e}`
         }
     }
     return 'error 3'

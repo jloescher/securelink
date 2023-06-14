@@ -1,9 +1,14 @@
 import { supabase } from '@/lib/supabaseClient'
 import Head from "next/head";
+import {useEffect} from "react";
 
 export const getServerSideProps = async (request) => {
   let long_url
   const { short } = request.query
+
+  // Call the stored function to delete the expired or max visits reached rows, had to set function as a SECURITY DEFINER
+  const { data: deleteData, error: deleteError } = await supabase.rpc('delete_expired_rows');
+
   try {
     // Get the current count for this short_uri from the database
     let { data, error } = await supabase
@@ -39,6 +44,7 @@ export const getServerSideProps = async (request) => {
 }
 
 const ShortUriPage = () => {
+
   return (
     <div>
       <Head>
