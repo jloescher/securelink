@@ -3,6 +3,7 @@ import { supabase } from '@/lib/supabaseClient';
 import { v4 as uuidv4 } from 'uuid';
 import Shortener from "@/lib/shortener";
 import {encrypt, hashPassword} from "@/lib/crypto";
+import Link from "next/link";
 
 const SecureMessage = ({ user }) => {
     const baseUrl = process.env.NEXT_PUBLIC_HOST_URL
@@ -47,6 +48,12 @@ const SecureMessage = ({ user }) => {
         if (error) {
             console.error('Error saving message:', error);
         } else {
+            setMessage('')
+            setPassword('')
+            setUseMaxVisits(false)
+            setUseExpireOn(false)
+            setMaxVisits(null)
+            setExpireOn(null)
             setShortUrl(baseUrl + shortened);
         }
     }
@@ -119,7 +126,7 @@ const SecureMessage = ({ user }) => {
                 </button>
                 {shortUrl && (
                     <p className="text-center text-blue-500">
-                        Short URL: <a href={shortUrl} className="underline">{shortUrl}</a>
+                        Short URL: <Link href={shortUrl} className="underline" target="_blank">{shortUrl}</Link>
                     </p>
                 )}
             </div>

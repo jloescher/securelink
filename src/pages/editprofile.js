@@ -3,7 +3,7 @@ import EditProfile from '../components/EditProfile'
 import SignIn from "@/pages/signin";
 
 export default function EditProfilePage () {
-    const { user }= useAuth()
+    const { user } = useAuth()
 
     return (
         <>

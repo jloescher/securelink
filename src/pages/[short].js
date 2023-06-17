@@ -1,30 +1,56 @@
 import { supabase } from '@/lib/supabaseClient'
 import Head from "next/head";
-import {useEffect} from "react";
+import { transporter } from '@/lib/mailer'
 
 export const getServerSideProps = async (request) => {
+  const baseUrl = process.env.NEXT_PUBLIC_HOST_URL
   let long_url
   const { short } = request.query
+
+  const sendEmail = async (to, url) => {
+    try {
+      let info = await transporter.sendMail({
+        from: '"Short URL Service" <no-reply@xotec.io>',
+        to: to,
+        subject: "Your short URL was accessed",
+        text: `Hello, your short URL ${url} has been accessed.`,
+      });
+
+      console.log("Message sent: %s", info.messageId);
+
+    } catch (error) {
+      console.log("Error sending email", error);
+    }
+  }
 
   // Call the stored function to delete the expired or max visits reached rows, had to set function as a SECURITY DEFINER
   const { data: deleteData, error: deleteError } = await supabase.rpc('delete_expired_rows');
 
   try {
     // Get the current count for this short_uri from the database
-    let { data, error } = await supabase
-      .from('urls')
-      .select('id, long_url')
-      .eq('short_uri', short)
+    const { data: urlData, error: urlError } = await supabase
+        .from('urls')
+        .select('id, long_url, user_id')
+        .eq('short_uri', short)
+        // .limit(1)
 
-    if (error) throw error
-    if (!data || data.length === 0) {
+
+    const { data: userData, error: userError } = await supabase
+        .from('user_emails')
+        .select('email')
+        .eq('id', urlData[0].user_id)
+
+    if (urlError) throw urlError
+    if (userError) throw userError
+    if (!urlData || urlData.length === 0) {
       throw new Error("No such URL found")
     } else {
-      long_url = data[0].long_url
+      sendEmail(userData[0].email, baseUrl + short)
+      long_url = urlData[0].long_url
     }
 
     // Increment count for this short_uri in the database
-    const { data: updateData, error: updateError } = await supabase.rpc('increment_count', { row_id: data[0].id })
+    const { data: updateData, error: updateError } = await supabase.rpc('increment_count', { row_id: urlData[0].id })
   } catch (updateError) {
     console.error(updateError)
   }

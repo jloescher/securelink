@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import { supabase } from '@/lib/supabaseClient'
 import { nanoid } from 'nanoid'
 import Link from "next/link";
@@ -53,9 +53,13 @@ export default function ShortenUrl({ user }) {
     if (error) {
       console.error("Error: ", error.message)
     } else {
-      setShortUrl(shortened)
+      setShortUrl(baseUrl+shortened)
       setUrl('')
+      setMaxVisits(null)
+      setExpireOn(null)
       setCustomUri(false)
+      setUseMaxVisits(false)
+      setUseExpireOn(false)
     }
   }
 
@@ -148,7 +152,9 @@ export default function ShortenUrl({ user }) {
         </form>
         <div className="text-center mt-2">
           {shortUrl && (
-            <Link href={baseUrl + shortUrl} className="text-blue-600" target="_blank">{baseUrl + shortUrl}</Link>
+              <p className="text-center text-blue-500">
+                Short URL: <Link href={shortUrl} className="underline" target="_blank">{shortUrl}</Link>
+              </p>
           )}
         </div>
       </div>

@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
-import { useAuth } from '@/lib/auth';
 import { supabase } from '@/lib/supabaseClient';
 
-const EditProfile = () => {
-  const { user } = useAuth();
+const EditProfile = ({ user }) => {
+
   const [profile, setProfile] = useState({});
 
   useEffect(() => {
