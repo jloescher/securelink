@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import {decrypt, encrypt} from "@/lib/crypto";
-import {supabase} from "@/lib/supabaseClient";
+import { decrypt, encrypt } from "@/lib/crypto";
+import { supabase } from "@/lib/supabaseClient";
 
 const Modal = ({ url, onClose }) => {
     const [urlId, setUrlId] = useState(url.id)
@@ -16,29 +16,25 @@ const Modal = ({ url, onClose }) => {
         setEncryptedMsg(url.encrypted_msg);
 
         if (shortUri && encryptedMsg) {
-         decrypt(encryptedMsg, shortUri).then(msg => setMessage(msg))
+            decrypt(encryptedMsg, shortUri).then(msg => setMessage(msg))
         }
     }, [encryptedMsg, shortUri, url]);
 
     const updateUrl = async (id, longUrl, encryptedMsg) => {
         try {
-            const { data, error } = await supabase
+            const { error } = await supabase
                 .from('urls')
                 .update({
                     long_url: longUrl,
-                    encrypted_msg: encryptedMsg,
+                    encrypted_msg: encryptedMsg ? encryptedMsg : null,
                 })
                 .eq('id', id)
-                .select()
 
             console.error(error)
-            console.log(data)
 
             if (error) {
                 throw error;
             }
-
-            return data
         } catch (error) {
             console.error('Error updating URL:', error.message);
         }
@@ -46,8 +42,12 @@ const Modal = ({ url, onClose }) => {
 
     const handleSave = async () => {
         // Update the url in the database
-        setEncryptedMsg(encrypt(message, shortUri)) //TODO: debug why this update is not saving to the DB
-        const url = await updateUrl(urlId, longUrl, encryptedMsg)
+        if (message) {
+            setEncryptedMsg(encrypt(message, shortUri))
+            const urlUpdated = await updateUrl(urlId, longUrl, encryptedMsg)
+        } else {
+            const urlUpdated = await updateUrl(urlId, longUrl)
+        }
 
         // Call onClose and pass the updated url back
         onClose({ ...url, long_url: longUrl, encrypted_msg: encryptedMsg });

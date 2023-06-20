@@ -1,19 +1,16 @@
-import {useAuth} from "@/lib/auth";
+import { useAuth } from "@/lib/auth";
 import Link from 'next/link';
-import {useEffect, useRef} from "react";
+import { useEffect } from "react";
 
-function Header({ setHeaderHeight }) {
-    const {user, signOut} = useAuth() || {};
-    const headerRef = useRef(null);
+function Header() {
+    const { user, isAdmin, signOut } = useAuth()
 
     useEffect(() => {
-        if (headerRef.current && typeof setHeaderHeight === 'function') {
-            setHeaderHeight(headerRef.current.offsetHeight);
-        }
-    }, [setHeaderHeight]);
+
+    }, [user]);
 
     return (
-        <header ref={headerRef} className="flex justify-between px-8 py-4 bg-gray-800 text-white">
+        <header className="flex justify-between px-8 py-4 bg-gray-800 text-white">
             <div>
                 <Link href="/" className="text-2xl font-bold">
                     SecureLink
@@ -22,6 +19,14 @@ function Header({ setHeaderHeight }) {
             <div>
                 {user ? (
                     <>
+                        {isAdmin &&
+                            <Link
+                                href="/admin-dashboard"
+                                className="text-sm font-semibold text-white bg-blue-500 px-4 py-[9px] mr-2 rounded hover:bg-blue-600"
+                            >
+                                Admin Dashboard
+                            </Link>
+                        }
                         <Link
                             href="/dashboard"
                             className="text-sm font-semibold text-white bg-blue-500 px-4 py-[9px] mr-2 rounded hover:bg-blue-600"
@@ -44,11 +49,11 @@ function Header({ setHeaderHeight }) {
                 ) : (
                     <>
                         <Link href="/signup"
-                              className="text-sm font-semibold text-white bg-blue-500 px-4 py-2 mr-2 rounded hover:bg-blue-600">
+                            className="text-sm font-semibold text-white bg-blue-500 px-4 py-2 mr-2 rounded hover:bg-blue-600">
                             Register
                         </Link>
                         <Link href="/signin"
-                              className="text-sm font-semibold text-white bg-blue-500 px-4 py-2 rounded hover:bg-blue-600">
+                            className="text-sm font-semibold text-white bg-blue-500 px-4 py-2 rounded hover:bg-blue-600">
                             Sign In
                         </Link>
                     </>

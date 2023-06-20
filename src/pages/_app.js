@@ -11,7 +11,7 @@ export default function SecureLink({ Component, pageProps }) {
   if (Component.name === 'ShortUriPage') {
     return (
       <>
-        <Header setHeaderHeight={setHeaderHeight} />
+        <Header />
           <main
               style={{ height: `calc(100vh - ${headerHeight}px)` }}
               className="overflow-auto"

@@ -1,28 +1,56 @@
-import {createContext, useContext, useEffect, useState} from 'react';
-import {useRouter} from 'next/router';
-import {supabase} from '@/lib/supabaseClient'
+import { createContext, useContext, useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import { supabase } from '@/lib/supabaseClient'
 
 export const AuthContext = createContext()
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true)
+  const [isAdmin, setIsAdmin] = useState(false)
   const router = useRouter()
 
   useEffect(() => {
     const { data } = supabase.auth.getSession()
-    setUser(data?.session?.user ?? null)
+    const session = data?.session
+    const user = session?.user ?? null
+    setUser(user)
     setLoading(false)
 
+    if (user) {
+      checkAdminStatus(user);
+    }
+
     const { subscription } = supabase.auth.onAuthStateChange(
-        async (_event, session) => {
-          setUser(session?.user ?? null)
-    });
+      async (_event, session) => {
+        const user = session?.user ?? null
+        setUser(user)
+        if (user) {
+          checkAdminStatus(user);
+        }
+      });
 
     return () => {
       subscription?.unsubscribe()
     }
   }, [])
+
+  const checkAdminStatus = async (currentUser) => {
+    if (currentUser) {
+      const { data: profile, error } = await supabase
+          .from('profiles')
+          .select('is_admin')
+          .eq('user_id', currentUser.id)
+          .limit(1)
+
+      if (error) {
+        console.error('Error checking admin status: ', error);
+        return;
+      }
+
+      setIsAdmin(profile?.is_admin ?? false);
+    }
+  };
 
   const signIn = async ({ email, password, redirectTo }) => {
     try {
@@ -82,6 +110,7 @@ export function AuthProvider({ children }) {
 
   const value = {
     user,
+    isAdmin,
     loading,
     signIn,
     signUp,
