@@ -13,7 +13,7 @@ const MessagePage = ({ shortUri, encryptedMsg, passwordMsg }) => {
             // Replace this with your decryption logic
             decrypt(encryptedMsg, shortUri).then(msg => setMessage(msg))
         }
-    }, [isVerified]);
+    }, [encryptedMsg, shortUri, isVerified]);
 
     const checkPassword = async (e) => {
         e.preventDefault();

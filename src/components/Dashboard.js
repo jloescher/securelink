@@ -26,15 +26,17 @@ const Dashboard = ({ user, scrollableHeight }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingUrl, setEditingUrl] = useState(null);
 
-    const fetchUrls = async () => {
-        const { data } = await supabase
-            .from('urls')
-            .select('*')
-            .eq('user_id', user.id);
-        setUrls(data);
-    };
+
 
     useEffect(() => {
+        const fetchUrls = async () => {
+            const { data } = await supabase
+                .from('urls')
+                .select('*')
+                .eq('user_id', user.id);
+            setUrls(data);
+        };
+
         fetchUrls();
     }, [user]);
 
