@@ -32,6 +32,5 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "@next/swc-darwin-arm64": "^13.4.4"
   }
 }
