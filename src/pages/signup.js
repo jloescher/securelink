@@ -16,7 +16,7 @@ export default function SignUp() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (password === confirmPassword) signUp({ email, password, firstName, lastName, redirectTo: '/' });
+    if (password === confirmPassword) signUp({ email, password, firstName, lastName, redirectTo: '/signup-confirmation' });
   };
 
 

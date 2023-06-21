@@ -61,7 +61,7 @@ export function AuthProvider({ children }) {
         await router.push(redirectTo);
       }
     } catch (error) {
-      setSignUpError(error.message)
+      alert(error.message)
     } finally {
       setLoading(false)
     }
@@ -87,7 +87,7 @@ export function AuthProvider({ children }) {
         await router.push(redirectTo);
       }
     } catch (error) {
-      alert(error.message)
+      setSignUpError(error.message)
     } finally {
       setLoading(false)
     }
