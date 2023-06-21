@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useAuth } from '@/lib/auth'
 
 export default function SignUp() {
-  const { signUp, loading } = useAuth()
+  const { signUp, signUpError, loading } = useAuth()
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
@@ -27,6 +27,7 @@ export default function SignUp() {
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
             Sign up to your account
           </h2>
+          <p>{ signUpError }</p>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md shadow-sm -space-y-px">
@@ -50,6 +51,7 @@ export default function SignUp() {
               <label htmlFor="confirm_password" className="sr-only">Confirm Password</label>
               <input id="confirm_password" name="confirm_password" type="password" required className={isPasswordMismatch ? 'ring-red-500 border-red-500 ' + 'appearance-none rounded-none relative block w-full px-3 py-2 border  focus:ring-indigo-500 focus:border-indigo-500 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:z-10 sm:text-sm' : 'border-gray-300 ' + 'appearance-none rounded-none relative block w-full px-3 py-2 border focus:ring-indigo-500 focus:border-indigo-500 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:z-10 sm:text-sm'} placeholder="Confirm Password" onChange={e => setConfirmPassword(e.target.value)} />
             </div>
+            <p>{isPasswordMismatch ? 'Passwords do not match.' : ''}</p>
           </div>
 
           <div>

@@ -8,6 +8,7 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true)
   const [isAdmin, setIsAdmin] = useState(false)
+  const [signUpError, setSignUpError] = useState('')
   const router = useRouter()
 
   useEffect(() => {
@@ -60,7 +61,7 @@ export function AuthProvider({ children }) {
         await router.push(redirectTo);
       }
     } catch (error) {
-      alert(error.message)
+      setSignUpError(error.message)
     } finally {
       setLoading(false)
     }
@@ -114,6 +115,7 @@ export function AuthProvider({ children }) {
     loading,
     signIn,
     signUp,
+    signUpError,
     signOut,
     forgotPassword,
   };
