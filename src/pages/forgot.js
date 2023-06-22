@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useAuth } from '@/lib/auth';
 
-export default function Forgot() {
+const Forgot = () => {
   const { forgotPassword } = useAuth();
   const [email, setEmail] = useState('')
   const [message, setMessage] = useState("")
@@ -44,3 +44,5 @@ export default function Forgot() {
     </div>
   )
 }
+
+export default Forgot
