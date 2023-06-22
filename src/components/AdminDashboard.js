@@ -17,8 +17,6 @@ const AdminDashboard = ({ user, isAdmin, forgotPassword }) => {
             .from('user_info')
             .select('*');
         setUsers(users);
-
-        console.error(error)
     };
 
     const sendPasswordReset = async (email) => {
@@ -29,6 +27,7 @@ const AdminDashboard = ({ user, isAdmin, forgotPassword }) => {
 
     const toggleAdminStatus = async (userId, userAdmin) => {
         // Toggle admin status for a user
+
         const { data, error } = await supabase.from('profiles').update({ is_admin: !userAdmin }).eq('user_id', userId);
         await fetchUsers()
     };
