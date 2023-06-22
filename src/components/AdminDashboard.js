@@ -17,25 +17,27 @@ const AdminDashboard = ({ user, isAdmin, forgotPassword }) => {
             .from('user_info')
             .select('*');
         setUsers(users);
+
+        console.error(error)
     };
 
     const deleteUser = async (userId) => {
         // Delete a user by user id
         // Ensure you have checks on the server-side
         await supabase.from('auth.users').delete().match({ id: userId });
-        fetchUsers();
+        await fetchUsers();
     };
 
     const sendPasswordReset = async (email) => {
         // Send password reset email
         forgotPassword(email)
-        fetchUsers()
+        await fetchUsers()
     };
 
     const toggleAdminStatus = async (userId, isAdmin) => {
         // Toggle admin status for a user
         await supabase.from('profiles').update({ is_admin: !isAdmin }).eq('user_id', userId);
-        fetchUsers()
+        await fetchUsers()
     };
 
     if (!isAdmin) {
