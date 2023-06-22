@@ -2,26 +2,10 @@ import {useEffect, useState} from "react";
 import {supabase} from "@/lib/supabaseClient";
 
 
-const AdminDashboard = ({ user }) => {
+const AdminDashboard = ({ user, isAdmin }) => {
     const [users, setUsers] = useState([])
-    const [isAdmin, setIsAdmin] = useState(false)
 
     useEffect(() => {
-        const checkAdmin = async () => {
-            try {
-                const { data, error } = await supabase
-                    .from('profiles')
-                    .select(`is_admin`)
-                    .eq('user_id', user.id)
-                    .limit(1)
-
-                setIsAdmin(data[0].is_admin);
-            } catch (error) {
-                alert(error.message);
-            }
-        }
-
-        checkAdmin()
         // Fetch all user accounts
         const fetchUsers = async () => {
             // Fetch user data from the database
