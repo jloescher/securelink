@@ -1,5 +1,5 @@
-import {useEffect, useState} from "react";
-import {supabase} from "@/lib/supabaseClient";
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabaseClient";
 
 
 const AdminDashboard = ({ user, isAdmin, forgotPassword }) => {
@@ -21,24 +21,15 @@ const AdminDashboard = ({ user, isAdmin, forgotPassword }) => {
         console.error(error)
     };
 
-    const deleteUser = async (userId) => {
-        // Delete a user by user id
-        // Ensure you have checks on the server-side
-        await supabase.from('auth.users').delete().match({ id: userId });
-        await fetchUsers();
-    };
-
     const sendPasswordReset = async (email) => {
         // Send password reset email
         forgotPassword(email)
         await fetchUsers()
     };
 
-    const toggleAdminStatus = async (userId, isAdmin) => {
+    const toggleAdminStatus = async (userId, userAdmin) => {
         // Toggle admin status for a user
-        const {data, error} = await supabase.from('profiles').update({ is_admin: !isAdmin }).eq('user_id', userId);
-        console.log(data)
-        console.error(error)
+        const { data, error } = await supabase.from('profiles').update({ is_admin: !userAdmin }).eq('user_id', userId);
         await fetchUsers()
     };
 
@@ -51,24 +42,23 @@ const AdminDashboard = ({ user, isAdmin, forgotPassword }) => {
             <h1 className="text-4xl font-semibold mb-6">Admin Dashboard</h1>
             <table className="w-full bg-white rounded-lg shadow-md">
                 <thead className="bg-blue-500 text-white">
-                <tr>
-                    <th className="py-2 px-4 text-left">Email</th>
-                    <th className="py-2 px-4 text-left">Is Admin</th>
-                    <th className="py-2 px-4 text-left">Actions</th>
-                </tr>
+                    <tr>
+                        <th className="py-2 px-4 text-left">Email</th>
+                        <th className="py-2 px-4 text-left">Is Admin</th>
+                        <th className="py-2 px-4 text-left">Actions</th>
+                    </tr>
                 </thead>
                 <tbody>
-                {users.map(user => (
-                    <tr key={user.id} className="border-b border-gray-200 text-gray-900">
-                        <td className="py-2 px-4">{user.email}</td>
-                        <td className="py-2 px-4">{user.is_admin ? 'Yes' : 'No'}</td>
-                        <td className="py-2 px-4">
-                            <button className="bg-red-500 text-white rounded px-4 py-2 mr-2" onClick={() => deleteUser(user.id)}>Delete User</button>
-                            <button className="bg-yellow-500 text-white rounded px-4 py-2 mr-2" onClick={() => sendPasswordReset(user.email)}>Send Password Reset</button>
-                            <button className="bg-green-500 text-white rounded px-4 py-2" onClick={() => toggleAdminStatus(user.id, isAdmin)}>Toggle Admin</button>
-                        </td>
-                    </tr>
-                ))}
+                    {users.map(user => (
+                        <tr key={user.id} className="border-b border-gray-200 text-gray-900">
+                            <td className="py-2 px-4">{user.email}</td>
+                            <td className="py-2 px-4">{user.is_admin ? 'Yes' : 'No'}</td>
+                            <td className="py-2 px-4">
+                                <button className="bg-yellow-500 text-white rounded px-4 py-2 mr-2" onClick={() => sendPasswordReset(user.email)}>Send Password Reset</button>
+                                <button className="bg-green-500 text-white rounded px-4 py-2" onClick={() => toggleAdminStatus(user.id, user.is_admin)}>Toggle Admin</button>
+                            </td>
+                        </tr>
+                    ))}
                 </tbody>
             </table>
         </div>
