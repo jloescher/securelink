@@ -29,6 +29,7 @@ const AdminDashboard = ({ user, isAdmin, forgotPassword }) => {
         // Toggle admin status for a user
 
         const { data, error } = await supabase.from('profiles').update({ is_admin: !userAdmin }).eq('user_id', userId);
+        alert(error.message)
         await fetchUsers()
     };
 
