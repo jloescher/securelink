@@ -49,7 +49,7 @@ export function AuthProvider({ children }) {
         return;
       }
 
-      setIsAdmin(profile?.is_admin ?? false);
+      setIsAdmin(profile[0]?.is_admin ?? false);
     }
   };
 
