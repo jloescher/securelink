@@ -108,7 +108,7 @@ export function AuthProvider({ children }) {
         redirectTo: '/update-password',
       })
       alert(error)
-      alert(data)
+      alert(data.message)
     } catch (error) {
       alert(error.message)
     }
