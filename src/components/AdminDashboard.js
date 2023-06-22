@@ -2,7 +2,7 @@ import {useEffect, useState} from "react";
 import {supabase} from "@/lib/supabaseClient";
 
 
-const AdminDashboard = ({ user, isAdmin }) => {
+const AdminDashboard = ({ user, isAdmin, forgotPassword }) => {
     const [users, setUsers] = useState([])
 
     useEffect(() => {
@@ -28,7 +28,8 @@ const AdminDashboard = ({ user, isAdmin }) => {
 
     const sendPasswordReset = async (email) => {
         // Send password reset email
-        // This is just a placeholder, integrate with your email sending logic
+        forgotPassword(email)
+        fetchUsers()
     };
 
     const toggleAdminStatus = async (userId, isAdmin) => {

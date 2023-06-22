@@ -3,12 +3,12 @@ import SignIn from "@/pages/signin";
 import AdminDashboard from "@/components/AdminDashboard";
 
 const AdminDashboardPage = () => {
-    const { user, isAdmin } = useAuth()
+    const { user, isAdmin, forgotPassword } = useAuth()
 
     return (
         <>
             {user ? (
-                    <AdminDashboard user={user} isAdmin={isAdmin} />
+                    <AdminDashboard user={user} isAdmin={isAdmin} forgotPassword={forgotPassword} />
                 ) : (
                     <SignIn />
                 )
