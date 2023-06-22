@@ -56,7 +56,8 @@ export function AuthProvider({ children }) {
   const signIn = async ({ email, password, redirectTo }) => {
     try {
       setLoading(true)
-      const { error } = await supabase.auth.signInWithPassword({ email, password })
+      const { data: { user}, error } = await supabase.auth.signInWithPassword({ email, password })
+      user ? await checkAdminStatus(user) : null
       if (!error && redirectTo) {
         await router.push(redirectTo);
       }
