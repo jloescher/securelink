@@ -6,20 +6,18 @@ const AdminDashboard = ({ user, isAdmin }) => {
     const [users, setUsers] = useState([])
 
     useEffect(() => {
-        // Fetch all user accounts
-        const fetchUsers = async () => {
-            // Fetch user data from the database
-            // Note: Ensure that only admins can fetch this data
-            const { data: users, error } = await supabase
-                .from('user_info')
-                .select('*');
-            setUsers(users);
-        };
-
         fetchUsers();
     }, [user]);
 
-
+    // Fetch all user accounts
+    const fetchUsers = async () => {
+        // Fetch user data from the database
+        // Note: Ensure that only admins can fetch this data
+        const { data: users, error } = await supabase
+            .from('user_info')
+            .select('*');
+        setUsers(users);
+    };
 
     const deleteUser = async (userId) => {
         // Delete a user by user id
@@ -36,6 +34,7 @@ const AdminDashboard = ({ user, isAdmin }) => {
     const toggleAdminStatus = async (userId, isAdmin) => {
         // Toggle admin status for a user
         await supabase.from('profiles').update({ is_admin: !isAdmin }).eq('user_id', userId);
+        fetchUsers()
     };
 
     if (!isAdmin) {
