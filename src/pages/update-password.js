@@ -30,8 +30,7 @@ export default function UpdatePassword() {
             {isCompleted ? (
                 <div className="text-center">
                     <h1 className="text-3xl mb-4">Password Updated Successfully</h1>
-                    <p>You can now login with your new password.</p>
-                    <SignIn />
+                    <p>Enjoy using your account.</p>
                 </div>
             ) : (
                 <form onSubmit={handlePasswordChange} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
