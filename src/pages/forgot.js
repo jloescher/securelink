@@ -8,10 +8,10 @@ const Forgot = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { error } = await forgotPassword(email);
+    const error = await forgotPassword(email);
 
     if (error) {
-      setMessage("Error resetting password\n" + error.message + "\n" + error.error_description);
+      setMessage("Error resetting password\n" + error);
     } else {
       setMessage("Password reset link has been sent to your email");
     }

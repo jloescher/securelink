@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabaseClient'
 export const AuthContext = createContext()
 
 export function AuthProvider({ children }) {
+  const baseUrl = process.env.NEXT_PUBLIC_HOST_URL
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true)
   const [isAdmin, setIsAdmin] = useState(false)
@@ -104,13 +105,22 @@ export function AuthProvider({ children }) {
 
   const forgotPassword = async (email) => {
     try {
-      const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: '/update-password',
-      })
-      alert(error)
-      alert(data.message)
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: baseUrl + 'update-password',
+      });
+      if (error) {
+        console.error(error.message)
+        return `Error sending password reset email: ${error.message}`
+
+        // Display an error message to the user
+      } else {
+        // Display a success message to the user
+      }
     } catch (error) {
-      alert(error.message)
+      console.error(error)
+      return `An unexpected error occurred: ${error}`
+
+      // Display an error message to the user
     }
   }
 

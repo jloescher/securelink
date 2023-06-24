@@ -37,7 +37,7 @@ export default function SignIn() {
               {loading ? "Signing In..." : "Sign In"}
             </button>
           </div>
-          <Link href="/signin">Forgot Password?</Link>
+          <Link href="/forgot">Forgot Password?</Link>
         </form>
       </div>
     </div>
