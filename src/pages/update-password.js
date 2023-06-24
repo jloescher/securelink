@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
+import SignIn from "@/pages/signin";
 
 export default function UpdatePassword() {
     const [password, setPassword] = useState('');
@@ -14,8 +15,8 @@ export default function UpdatePassword() {
             return;
         }
 
-        const session = supabase.auth.session();
-        const { error } = await supabase.auth.update({ password: password });
+        const { error } = await supabase.auth.updateUser({ password: password })
+
 
         if (error) {
             setError(error.message);
@@ -30,6 +31,7 @@ export default function UpdatePassword() {
                 <div className="text-center">
                     <h1 className="text-3xl mb-4">Password Updated Successfully</h1>
                     <p>You can now login with your new password.</p>
+                    <SignIn />
                 </div>
             ) : (
                 <form onSubmit={handlePasswordChange} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
