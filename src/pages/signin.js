@@ -67,7 +67,7 @@ export default function SignIn() {
               <div>
                 <button
                     type="submit"
-                    className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    className="flex w-full justify-center rounded-md bg-blue-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
                 >
                   {loading ? "Signing In..." : "Sign In"}
                 </button>
@@ -80,7 +80,7 @@ export default function SignIn() {
 
             <p className="text-center text-sm leading-6 text-gray-500">
               Not a member?{' '}
-              <Link href="/signup" className="font-semibold text-indigo-600 hover:text-indigo-500">
+              <Link href="/signup" className="font-semibold text-blue-600 hover:text-blue-500">
                 Sign up here
               </Link>
             </p>
