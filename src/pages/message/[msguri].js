@@ -31,8 +31,8 @@ const MessagePage = ({ shortUri, encryptedMsg, passwordMsg }) => {
     };
 
     return (
-        <div className="relative flex flex-col justify-center items-center min-h-screen overflow-hidden bg-gray-300 border-2 border-blue-600 rounded-md">
-            <div className="flex min-h-full flex-1 items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
+        <div className="relative flex flex-col justify-center items-center min-h-screen overflow-hidden">
+            <div className="flex min-h-full flex-1 items-center justify-center px-4 py-12 sm:px-6 lg:px-8 bg-gray-300 border-2 border-blue-600 rounded-md">
                 {isVerified ? (
                     <div>
                         <h1 className="text-2xl font-bold">Message:</h1>
