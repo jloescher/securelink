@@ -10,7 +10,6 @@ export default function Home() {
 
   return (
     <>
-
       {user ? (
         <div>
           <div className="flex justify-center items-center align-middle my-4">

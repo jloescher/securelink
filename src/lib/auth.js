@@ -10,6 +10,7 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true)
   const [isAdmin, setIsAdmin] = useState(false)
   const [signUpError, setSignUpError] = useState('')
+  const [signInError, setSignInError] = useState('')
   const router = useRouter()
 
   useEffect(() => {
@@ -59,11 +60,14 @@ export function AuthProvider({ children }) {
       setLoading(true)
       const { data: { user}, error } = await supabase.auth.signInWithPassword({ email, password })
       user ? await checkAdminStatus(user) : null
+      if (!user || error) {
+        setSignInError('There was an error signing in, please check your email and password.')
+      }
       if (!error && redirectTo) {
         await router.push(redirectTo);
       }
     } catch (error) {
-      alert(error.message)
+      return error
     } finally {
       setLoading(false)
     }
@@ -129,6 +133,7 @@ export function AuthProvider({ children }) {
     isAdmin,
     loading,
     signIn,
+    signInError,
     signUp,
     signUpError,
     signOut,

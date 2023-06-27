@@ -3,7 +3,7 @@ import { supabase } from '@/lib/supabaseClient'
 export default function SignOut() {
   const handleSignOut = async () => {
     let { error } = await supabase.auth.signOut()
-    if (error) console.log("Error signing out: ", error.message)
+    if (error) console.log('Error signing out: ', error.message)
   }
 
   return (

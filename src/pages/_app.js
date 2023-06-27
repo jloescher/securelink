@@ -1,36 +1,34 @@
 import Header from "@/components/Header";
 import "../css/globals.css"
-import { AuthProvider } from "@/lib/auth";
-import {useState} from "react";
+import {AuthProvider} from "@/lib/auth";
 
-export default function SecureLink({ Component, pageProps }) {
-    const [headerHeight, setHeaderHeight] = useState(0);
-  // // Use the layout defined at the page level, if available
-  // const getLayout = Component.getLayout || ((page) => page);
+export default function SecureLink({Component, pageProps}) {
+    // Use the layout defined at the page level, if available
+    // const getLayout = Component.getLayout || ((page) => page);
 
-  if (Component.name === 'ShortUriPage') {
+    if (Component.name === 'ShortUriPage') {
+        return (
+            <div className="h-screen">
+                <Header/>
+                <main
+                    className="bg-gray-100 h-[calc(100vh-64px)] overflow-auto lg:rounded-tl-3xl my-auto"
+                >
+                    <Component {...pageProps} />
+                </main>
+            </div>
+        )
+    }
+
     return (
-      <>
-        <Header />
-          <main
-              style={{ height: `calc(100vh - ${headerHeight}px)` }}
-              className="overflow-auto"
-          >
-              <Component {...pageProps} />
-          </main>
-      </>
-    )
-  }
-
-  return (
-    <AuthProvider>
-        <Header />
-        <main
-            style={{ height: `calc(100vh - ${headerHeight}px)` }}
-            className="overflow-auto"
-        >
-            <Component {...pageProps} />
-        </main>
-    </AuthProvider>
-  );
+        <AuthProvider>
+            <div className="h-screen">
+            <Header/>
+            <main
+                className="bg-gray-100 h-[calc(100vh-64px)] overflow-auto lg:rounded-tl-3xl"
+            >
+                <Component {...pageProps} />
+            </main>
+            </div>
+        </AuthProvider>
+    );
 }

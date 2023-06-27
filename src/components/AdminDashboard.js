@@ -37,29 +37,64 @@ const AdminDashboard = ({ user, isAdmin, forgotPassword }) => {
     }
 
     return (
-        <div className="p-8 bg-gray-100 min-h-screen">
-            <h1 className="text-4xl font-semibold mb-6">Admin Dashboard</h1>
-            <table className="w-full bg-white rounded-lg shadow-md">
-                <thead className="bg-blue-500 text-white">
-                    <tr>
-                        <th className="py-2 px-4 text-left">Email</th>
-                        <th className="py-2 px-4 text-left">Is Admin</th>
-                        <th className="py-2 px-4 text-left">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {users.map(user => (
-                        <tr key={user.id} className="border-b border-gray-200 text-gray-900">
-                            <td className="py-2 px-4">{user.email}</td>
-                            <td className="py-2 px-4">{user.is_admin ? 'Yes' : 'No'}</td>
-                            <td className="py-2 px-4">
-                                <button className="bg-yellow-500 text-white rounded px-4 py-2 mr-2" onClick={() => sendPasswordReset(user.email)}>Send Password Reset</button>
-                                <button className="bg-green-500 text-white rounded px-4 py-2" onClick={() => toggleAdminStatus(user.id, user.is_admin)}>Toggle Admin</button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+        <div className="px-4 sm:px-6 lg:px-8">
+            <div className="sm:flex sm:items-center">
+                <div className="sm:flex-auto">
+                    <h1 className="text-base font-semibold leading-6 text-gray-900">Users</h1>
+                    <p className="mt-2 text-sm text-gray-700">
+                        A list of all the users in your account including their name, title, email and role.
+                    </p>
+                </div>
+                <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
+                    <button
+                        type="button"
+                        className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    >
+                        Add user {/* TODO: Add a model to open user Registration */}
+                    </button>
+                </div>
+            </div>
+            <div className="mt-8 flow-root">
+                <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                    <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+                        <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
+                            <table className="min-w-full divide-y divide-gray-300">
+                                <thead className="bg-gray-50">
+                                <tr>
+                                    <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">
+                                        Name
+                                    </th>
+                                    <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                        Email
+                                    </th>
+                                    <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                        Role
+                                    </th>
+                                    <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                                        Action
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody className="divide-y divide-gray-200 bg-white">
+                                    {users.map(user => (
+                                        <tr key={user.id} className="border-b border-gray-200 text-gray-900">
+                                            <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
+                                                {`${user.first_name} ${user.last_name}`}
+                                            </td>
+                                            <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{user.email}</td>
+                                            <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{user.is_admin ? 'Admin' : 'User'}</td>
+                                            <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                                                <button className="bg-yellow-500 text-white rounded px-4 py-2 mr-2" onClick={() => sendPasswordReset(user.email)}>Send Password Reset</button>
+                                                <button className="bg-green-500 text-white rounded px-4 py-2" onClick={() => toggleAdminStatus(user.id, user.is_admin)}>Toggle Admin</button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 
